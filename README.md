@@ -25,6 +25,10 @@ SQL Azure Database: Serves as the central repository for storing the transformed
 
 Power BI: Enables the creation of dynamic visualizations and reports to gain insights from the health data, facilitating data-driven decision-making.
 
+Architectural Diagram 
+![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/bb670d95-87ce-4c84-954d-7cb87d4ffbc5)
+
+
 Benefits
 Scalability: Azure services offer scalability, allowing the ETL pipeline to efficiently handle large volumes of data.
 
