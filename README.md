@@ -34,6 +34,8 @@ Insightful Analysis: Power BI provides powerful visualization capabilities, enab
 
 ![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/aced23e5-1b0a-4aad-8ceb-0b87712ba477)
 
+The visualization can be accessed through this [link](https://app.powerbi.com/view?r=eyJrIjoiMThmZDE3NDgtNDhkOS00ODQxLWJhNWYtNTQ4NmFmOTBiZDFhIiwidCI6IjJlODZmNjcyLTY3ZGYtNGZjMC04NmE2LWZmZTc4MTY3MTA0ZSIsImMiOjl9)
+
 
 
 
