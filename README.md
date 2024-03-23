@@ -32,7 +32,8 @@ Automation: Azure Data Factory automates the ETL process, reducing manual interv
 
 Insightful Analysis: Power BI provides powerful visualization capabilities, enabling stakeholders to gain valuable insights from the health data.
 
-![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/aced23e5-1b0a-4aad-8ceb-0b87712ba477)
+![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/3d1eec66-4af2-4ebd-9dfe-b879f81d58c5)
+
 
 The visualization can be accessed through this [link](https://app.powerbi.com/view?r=eyJrIjoiMThmZDE3NDgtNDhkOS00ODQxLWJhNWYtNTQ4NmFmOTBiZDFhIiwidCI6IjJlODZmNjcyLTY3ZGYtNGZjMC04NmE2LWZmZTc4MTY3MTA0ZSIsImMiOjl9)
 
