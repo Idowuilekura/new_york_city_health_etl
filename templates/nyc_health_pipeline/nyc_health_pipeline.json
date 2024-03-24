@@ -1,0 +1,253 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"AzureSQLDBLS": {
+			"type": "string"
+		},
+		"nyc_rest_LS": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/nyc_health_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "nyc_health_data_flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "nyc_health_data_flow",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "start_dbt_container",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "nyc_health_data_flow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"url": {
+								"value": "https://management.azure.com/subscriptions/acdee4ab-0fab-47f5-a7d7-8b0cf458a3a8/resourcegroups/idowu_prac/providers/Microsoft.ContainerInstance/containerGroups/idowucontainer/start?api-version=2023-05-01",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": " https://management.azure.com/"
+							}
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2024-03-24T03:51:21Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/nyc_health_data_flow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/nyc_health_data_flow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "nyc_health_data_DS",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "[parameters('AzureSQLDBLS')]",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "[parameters('AzureSQLDBLS')]",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "cast1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "selectdatafiletosink"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "filter2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          body as (age_adjusted_death_rate as string, death_rate as string, deaths as string, leading_cause as string, race_ethnicity as string, sex as string, year as short),",
+						"          headers as [string,string]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     httpMethod: 'GET',",
+						"     timeout: 30,",
+						"     requestInterval: 0,",
+						"     paginationRules: ['supportRFC5988' -> 'true'],",
+						"     responseFormat: ['type' -> 'json', 'documentForm' -> 'arrayOfDocuments']) ~> source1",
+						"source(output(",
+						"          year as integer,",
+						"          leading_cause as string,",
+						"          race_ethnicity as string,",
+						"          deaths as integer,",
+						"          death_rate as integer,",
+						"          age_adjusted_death_rate as integer,",
+						"          sex as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'dbo',",
+						"     tableName: 'NYCHEALTHDATA',",
+						"     isolationLevel: 'READ_UNCOMMITTED') ~> source2",
+						"source1 cast(output(",
+						"          body as (age_adjusted_death_rate as string, death_rate as string, deaths as string, leading_cause as string, race_ethnicity as string, sex as string, year as short)",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"cast1 select(mapColumn(",
+						"          age_adjusted_death_rate = body.age_adjusted_death_rate,",
+						"          death_rate = body.death_rate,",
+						"          deaths = body.deaths,",
+						"          leading_cause = body.leading_cause,",
+						"          race_ethnicity = body.race_ethnicity,",
+						"          sex = body.sex,",
+						"          year = body.year",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(age_adjusted_death_rate_new = case(age_adjusted_death_rate=='.',0,toInteger(age_adjusted_death_rate)),",
+						"          death_rate_new = case(death_rate=='.',0,toInteger(death_rate)),",
+						"          deaths_new = toInteger(deaths),",
+						"          leading_cause_new = regexReplace(leading_cause, `\\s*\\([^)]*\\)?\\s*$`, ``)) ~> derivedColumn1",
+						"derivedColumn1 filter(!(isNull(age_adjusted_death_rate_new) || isNull(death_rate_new) || isNull(sex) || isNull(leading_cause))) ~> filter1",
+						"filter1 select(mapColumn(",
+						"          leading_cause = leading_cause_new,",
+						"          race_ethnicity,",
+						"          sex,",
+						"          year,",
+						"          age_adjusted_death_rate = age_adjusted_death_rate_new,",
+						"          death_rate = death_rate_new,",
+						"          deaths = deaths_new",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectdatafiletosink",
+						"selectdatafiletosink, select3 join(toInteger(year) == year_db,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"source2 select(mapColumn(",
+						"          year_db = year",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"join1 filter(isNull(year_db)) ~> filter2",
+						"filter2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'dbo',",
+						"     tableName: 'NYCHEALTHDATA',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/nyc_health_data_DS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/nyc_health_data_DS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('nyc_rest_LS')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"schema": []
+			},
+			"dependsOn": []
+		}
+	]
+}
