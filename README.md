@@ -33,10 +33,14 @@ DBT workflow was containerized inside a docker container, and Azure data factory
 Power BI: Enables the creation of dynamic visualizations and reports to gain insights from the health data, facilitating data-driven decision-making.
 
 Data Flow Workflow 
+
 ![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/f830da80-3bde-4bb1-b89c-8dd9e9ca19f1)
 
+
 Data Factory Pipeline 
-![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/92960272-b426-4208-99f4-8747351c2bb1)
+
+![image](https://github.com/Idowuilekura/new_york_city_health_etl/assets/38056084/44ea9ce2-49a8-4833-bf11-fee49efc19d7)
+
 
 
 
