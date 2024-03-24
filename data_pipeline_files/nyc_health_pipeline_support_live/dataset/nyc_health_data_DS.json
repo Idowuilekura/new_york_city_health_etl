@@ -1,0 +1,13 @@
+{
+    "name": "nyc_health_data_DS",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "nyc_rest_LS",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "RestResource",
+        "schema": []
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

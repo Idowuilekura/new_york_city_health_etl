@@ -1,0 +1,13 @@
+{
+    "name": "nyc_rest_LS",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "RestService",
+        "typeProperties": {
+            "url": "https://data.cityofnewyork.us/resource/jb7j-dtam.json",
+            "enableServerCertificateValidation": true,
+            "authenticationType": "Anonymous"
+        }
+    }
+}

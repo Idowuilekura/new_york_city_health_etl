@@ -1,0 +1,7 @@
+selected resource name:		nyc_health_pipeline
+selected resource type:		pipeline
+factory name:			idowupracdatafactory
+factory location:		eastus
+subscription id:		acdee4ab-0fab-47f5-a7d7-8b0cf458a3a8
+data flow session id:		8387f8eb-2bff-461b-8efb-4e304036a4da
+time of download (UTC):		Sun, 24 Mar 2024 03:51:33 GMT

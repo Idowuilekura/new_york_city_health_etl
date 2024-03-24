@@ -1,0 +1,65 @@
+{
+    "name": "nyc_health_pipeline",
+    "properties": {
+        "activities": [
+            {
+                "name": "nyc_health_data_flow",
+                "type": "ExecuteDataFlow",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataflow": {
+                        "referenceName": "nyc_health_data_flow",
+                        "type": "DataFlowReference"
+                    },
+                    "compute": {
+                        "coreCount": 8,
+                        "computeType": "General"
+                    },
+                    "traceLevel": "Fine"
+                }
+            },
+            {
+                "name": "start_dbt_container",
+                "type": "WebActivity",
+                "dependsOn": [
+                    {
+                        "activity": "nyc_health_data_flow",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "method": "POST",
+                    "url": {
+                        "value": "https://management.azure.com/subscriptions/acdee4ab-0fab-47f5-a7d7-8b0cf458a3a8/resourcegroups/idowu_prac/providers/Microsoft.ContainerInstance/containerGroups/idowucontainer/start?api-version=2023-05-01",
+                        "type": "Expression"
+                    },
+                    "authentication": {
+                        "type": "MSI",
+                        "resource": " https://management.azure.com/"
+                    }
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2024-03-23T23:18:05Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

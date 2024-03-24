@@ -1,0 +1,24 @@
+{
+    "now": "2024-03-24T03:51:33.055Z",
+    "perfNow": 87312928.19999993,
+    "diagnosticCorrelation": "0e22d899-1dd4-45db-8816-6a7df43facf1",
+    "source": "DownloadSupportFiles",
+    "environment": {
+        "productName": "adf",
+        "buildVersion": "1.0.032024.9",
+        "environmentType": 3,
+        "resourceName": "idowupracdatafactory",
+        "resourceRegion": "eastus",
+        "resourceGroup": "idowu_prac",
+        "subscriptionId": "acdee4ab-0fab-47f5-a7d7-8b0cf458a3a8",
+        "sessionId": "rHRFJbHQcKmoXYZPSX52F2",
+        "operationId": "",
+        "gitType": "live",
+        "loggingKey": "ecc8e6cb-1b7d-43ff-8abf-be0fdd87a9a9"
+    },
+    "additionalInfo": {
+        "selectedResource": "nyc_health_pipeline",
+        "selectedResourceType": "pipeline",
+        "dataFlowSessionId": "8387f8eb-2bff-461b-8efb-4e304036a4da"
+    }
+}
