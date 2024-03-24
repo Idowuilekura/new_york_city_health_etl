@@ -1,0 +1,24 @@
+{
+	"name": "RestCountryDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "restcountryLS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"countryname": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().countryname",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "idowupracdatafactory",
+	"properties": {
+		"globalParameters": {
+			"ApplicationName": {
+				"type": "string",
+				"value": "dev"
+			}
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d7468916-ce90-4035-862b-ac9cb3970357",
+		"tenantId": "f9d3caaf-a943-4d7b-b68f-3ea3d5cf7659"
+	}
+}

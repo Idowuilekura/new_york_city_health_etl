@@ -1,0 +1,25 @@
+{
+	"name": "storage_event",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "incremental_example",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/azurelibcont/blobs/Customer/C",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/acdee4ab-0fab-47f5-a7d7-8b0cf458a3a8/resourceGroups/idowu_prac/providers/Microsoft.Storage/storageAccounts/idowupracstorage",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

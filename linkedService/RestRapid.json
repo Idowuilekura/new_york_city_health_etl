@@ -1,0 +1,23 @@
+{
+	"name": "RestRapid",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://currency-exchange.p.rapidapi.com/exchange?from=SGD&to=MYR&q=1",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"X-RapidAPI-Key": {
+					"type": "SecureString",
+					"value": "**********"
+				},
+				"X-RapidAPI-Host": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,136 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "customerdata"
+				},
+				{
+					"dataset": {
+						"referenceName": "customerds",
+						"type": "DatasetReference"
+					},
+					"name": "customerdatacsv"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterrecords"
+				},
+				{
+					"name": "customernamewitha"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "sortcustomer"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          NameStyle as boolean,",
+				"          Title as string,",
+				"          FirstName as string,",
+				"          MiddleName as string,",
+				"          LastName as string,",
+				"          Suffix as string,",
+				"          CompanyName as string,",
+				"          SalesPerson as string,",
+				"          EmailAddress as string,",
+				"          Phone as string,",
+				"          PasswordHash as string,",
+				"          PasswordSalt as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT *\\nFROM saleslt.customer',",
+				"     format: 'query') ~> customerdata",
+				"source(output(",
+				"          CustomerID as short,",
+				"          NameStyle as boolean,",
+				"          Title as string,",
+				"          FirstName as string,",
+				"          MiddleName as string,",
+				"          LastName as string,",
+				"          Suffix as string,",
+				"          CompanyName as string,",
+				"          SalesPerson as string,",
+				"          EmailAddress as string,",
+				"          Phone as string,",
+				"          PasswordHash as string,",
+				"          PasswordSalt as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> customerdatacsv",
+				"customerdatacsv filter(CustomerID > 20) ~> filterrecords",
+				"filterrecords derive(FirstNameStartWithA = startsWith(lower(FirstName), 'a')) ~> customernamewitha",
+				"customernamewitha, customerdata join(customerdatacsv@CustomerID == customerdata@CustomerID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sort(asc(customerdata@FirstName, true)) ~> sortcustomer",
+				"sortcustomer select(mapColumn(",
+				"          CustomerID = customerdatacsv@CustomerID,",
+				"          NameStyle = customerdatacsv@NameStyle,",
+				"          Title = customerdatacsv@Title,",
+				"          FirstName = customerdatacsv@FirstName,",
+				"          MiddleName = customerdatacsv@MiddleName,",
+				"          LastName = customerdatacsv@LastName,",
+				"          Suffix = customerdatacsv@Suffix,",
+				"          CompanyName = customerdatacsv@CompanyName,",
+				"          SalesPerson = customerdatacsv@SalesPerson,",
+				"          EmailAddress = customerdatacsv@EmailAddress,",
+				"          Phone = customerdatacsv@Phone,",
+				"          rowguid = customerdatacsv@rowguid,",
+				"          ModifiedDate = customerdatacsv@ModifiedDate,",
+				"          FirstNameStartWithA,",
+				"          CustomerID = customerdata@CustomerID,",
+				"          NameStyle = customerdata@NameStyle,",
+				"          Title = customerdata@Title,",
+				"          FirstName = customerdata@FirstName,",
+				"          MiddleName = customerdata@MiddleName,",
+				"          LastName = customerdata@LastName,",
+				"          Suffix = customerdata@Suffix,",
+				"          CompanyName = customerdata@CompanyName,",
+				"          SalesPerson = customerdata@SalesPerson,",
+				"          EmailAddress = customerdata@EmailAddress,",
+				"          Phone = customerdata@Phone,",
+				"          rowguid = customerdata@rowguid,",
+				"          ModifiedDate = customerdata@ModifiedDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 0) ~> sink1"
+			]
+		}
+	}
+}

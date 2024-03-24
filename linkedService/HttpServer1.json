@@ -1,0 +1,13 @@
+{
+	"name": "HttpServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://history.openweathermap.org/data/2.5/history/city?lat=41.85&lon=-87.65&appid=bc39a87b7825190d0c1c03abb2dff3be",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"name": "NYCHelath_LS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "healthnycLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			},
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "year",
+				"type": "String"
+			},
+			{
+				"name": "leading_cause",
+				"type": "String"
+			},
+			{
+				"name": "sex",
+				"type": "String"
+			},
+			{
+				"name": "race_ethnicity",
+				"type": "String"
+			},
+			{
+				"name": "deaths",
+				"type": "String"
+			},
+			{
+				"name": "death_rate",
+				"type": "String"
+			},
+			{
+				"name": "age_adjusted_death_rate",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

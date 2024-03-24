@@ -1,0 +1,32 @@
+{
+	"name": "Every_1_Minute",
+	"properties": {
+		"description": "This trigger will execute pipeline every one minute",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "all_countries_pipeline",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "incremental_example",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2024-03-21T02:21:00",
+				"endTime": "2024-03-22T02:21:00",
+				"timeZone": "GMT Standard Time"
+			}
+		}
+	}
+}

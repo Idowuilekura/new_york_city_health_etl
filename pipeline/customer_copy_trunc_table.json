@@ -1,0 +1,76 @@
+{
+	"name": "customer_copy_trunc_table",
+	"properties": {
+		"activities": [
+			{
+				"name": "count customer records",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) AS RecordCounts\nFROM \nsaleslt.customer ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "count customer records",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('count customer records').output.firstRow.RecordCounts, 100)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Stored procedure2",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[SalesLT].[CREATE_NEW_TABLE_LISBON_NEW]"
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSQLDBLS",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-02-26T15:18:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

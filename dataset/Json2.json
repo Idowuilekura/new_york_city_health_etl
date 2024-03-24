@@ -1,0 +1,74 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalakestorageLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "azurelibcont"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ProductID": {
+					"type": "integer"
+				},
+				"Name": {
+					"type": "string"
+				},
+				"ProductNumber": {
+					"type": "string"
+				},
+				"Color": {
+					"type": "string"
+				},
+				"StandardCost": {
+					"type": "number"
+				},
+				"ListPrice": {
+					"type": "number"
+				},
+				"Size": {
+					"type": "string"
+				},
+				"Weight": {
+					"type": "number"
+				},
+				"ProductCategoryID": {
+					"type": "integer"
+				},
+				"ProductModelID": {
+					"type": "integer"
+				},
+				"SellStartDate": {
+					"type": "string"
+				},
+				"SellEndDate": {
+					"type": "string"
+				},
+				"DiscontinuedDate": {
+					"type": "null"
+				},
+				"ThumbNailPhoto": {
+					"type": "string"
+				},
+				"ThumbnailPhotoFileName": {
+					"type": "string"
+				},
+				"rowguid": {
+					"type": "string"
+				},
+				"ModifiedDate": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "CoinGecko",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://api.coingecko.com/api/v3/coins/bitcoin/history?date=30-12-2017&localization=false",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"x-cg-demo-api-key": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}

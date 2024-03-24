@@ -1,0 +1,119 @@
+{
+	"name": "all_countries_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "RestCountryDS",
+						"type": "DatasetReference",
+						"parameters": {
+							"countryname": "fran"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Pass web activity",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://prod-94.eastus.logic.azure.com:443/workflows/6f1f588973fb492180b42454f09cab93/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=uPh_wWUnLRUXfVhaKms64wvklQ9SNIgAcAOYHbZSBr0",
+					"body": {
+						"sendMailto": "a81922@ualg.pt",
+						"status": "Pass",
+						"PipelineName": "ssjd",
+						"MessageBody": "All Good"
+					}
+				}
+			},
+			{
+				"name": "failed web activity",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-94.eastus.logic.azure.com:443/workflows/6f1f588973fb492180b42454f09cab93/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=uPh_wWUnLRUXfVhaKms64wvklQ9SNIgAcAOYHbZSBr0",
+					"body": {
+						"value": "{\n    \"sendMailto\": \"a81922ualg.pt\",\n    \"status\": \"Fail\",\n    \"PipelineName\": \"ssjd\",\n    \"MessageBody\": \"Issue with the code\"\n}\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-03-20T17:10:25Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

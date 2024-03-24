@@ -1,0 +1,190 @@
+{
+	"name": "scdType3DataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ScdTable",
+						"type": "DatasetReference"
+					},
+					"name": "customerdb",
+					"description": "customer db"
+				},
+				{
+					"linkedService": {
+						"referenceName": "datalakestorageLS",
+						"type": "LinkedServiceReference"
+					},
+					"name": "customertxt"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ScdType3DBDS",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureSQLDBLS",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcustomercolumns"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "removeidnotindb"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          password_current as string,",
+				"          password_old as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT id AS id, name AS name, password_current AS password_current, \\npassword_old AS password_old\\nFROM [dbo].[EmployeeSCDType3]',",
+				"     format: 'query') ~> customerdb",
+				"source(output(",
+				"          id as short,",
+				"          name as string,",
+				"          password as string",
+				"     ),",
+				"     useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'azurelibcont',",
+				"     fileName: 'customers.txt',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: true) ~> customertxt",
+				"customerdb select(mapColumn(",
+				"          id_db = id,",
+				"          name_db = name,",
+				"          password_current_db = password_current,",
+				"          password_old_db = password_old",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcustomercolumns",
+				"customertxt, selectcustomercolumns lookup(id == id_db,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 filter(!isNull(id_db)) ~> removeidnotindb",
+				"removeidnotindb select(mapColumn(",
+				"          id,",
+				"          password_file = password,",
+				"          password_old_db = password_current_db",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(password_old = password_old_db,",
+				"          password_current = password_file) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          id,",
+				"          password_old,",
+				"          password_current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"lookup1 filter(isNull(id_db)) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          id,",
+				"          name,",
+				"          password,",
+				"          password_current_db",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns derive(password_current = password,",
+				"          password_old = password_current_db) ~> derivedColumn2",
+				"derivedColumn2 select(mapColumn(",
+				"          id,",
+				"          name,",
+				"          password_current,",
+				"          password_old",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select2 alterRow(updateIf(1==1)) ~> alterRow1",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          name as string,",
+				"          password_c as string,",
+				"          password_n as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 0,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'EmployeeSCDType3',",
+				"     insertable: false,",
+				"     updateable: true,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     keys:['id'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id,",
+				"          password_old,",
+				"          password_current",
+				"     )) ~> sink3"
+			]
+		}
+	}
+}

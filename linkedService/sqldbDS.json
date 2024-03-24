@@ -1,0 +1,19 @@
+{
+	"name": "sqldbDS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=azurelibprac.database.windows.net;Initial Catalog=sqldblib;User ID=idowuadmin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "dbnewkeyvaultls",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqldbpassword"
+			}
+		}
+	}
+}

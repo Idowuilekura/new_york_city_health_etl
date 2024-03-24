@@ -1,0 +1,21 @@
+{
+	"name": "JsonProductDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalakestorageLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "product_second_test.json",
+				"folderPath": "Product",
+				"fileSystem": "azurelibcont"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
